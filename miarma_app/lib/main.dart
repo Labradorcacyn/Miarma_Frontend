@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(),
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginScreen(),
+        '/': (context) => MenuScreen(),
       },
     );
   }

@@ -22,7 +22,19 @@ class _MenuScreenState extends State<MenuScreen> {
     final items = <Widget>[
       Icon(FontAwesomeIcons.home, size: 20),
       Icon(FontAwesomeIcons.user, size: 20),
-      Icon(FontAwesomeIcons.search, size: 20)
+      Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            border: Border.all(width: 1)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Image.asset(
+            'assets/images/avatar.jpeg',
+            width: 30,
+          ),
+        ),
+      ),
     ];
 
     return Scaffold(
