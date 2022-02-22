@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:miarma_app/blocs/bloc_posts/post_bloc.dart';
+import 'package:miarma_app/models/post_model.dart';
+import 'package:miarma_app/resources/post_repositoryImpl.dart';
+import 'package:miarma_app/resources/repository_post.dart';
+import 'package:miarma_app/ui/widgets/error_page.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -10,12 +16,51 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List fotos = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  //List fotos = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  late RepositoryPost postRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    postRepository = PostRepositoryImpl();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: ListView(
+    return BlocProvider(
+      create: (context) {
+        return PostBloc(postRepository)..add(FetchPostsPublicEvent());
+      },
+      child: Scaffold(body: _listPosts(context)),
+    );
+  }
+
+  _listPosts(BuildContext context) {
+    return BlocBuilder<PostBloc, PostState>(builder: (context, state) {
+      if (state is PostInitial) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (state is PostFetched) {
+        return _createPostView(context, state.posts);
+      } else if (state is PostFetchError) {
+        return ErrorPage(
+          message: state.message,
+          retry: () {
+            context.watch<PostBloc>().add(FetchPostsPublicEvent());
+          },
+        );
+      } else {
+        return const Text('Not support');
+      }
+    });
+  }
+
+  _createPostView(BuildContext context, List<PostModel> posts) {
+    return ListView(
       physics: AlwaysScrollableScrollPhysics(),
       children: <Widget>[
         Padding(
@@ -23,21 +68,30 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("MiarmaApp"),
+              Text(
+                "MiarmaApp",
+                style: TextStyle(fontSize: 30, color: Colors.purple),
+              ),
               Row(
                 children: <Widget>[
                   IconButton(
-                      onPressed: () => print('Agregar Publicación'),
-                      iconSize: 20,
-                      icon: Icon(FontAwesomeIcons.plus)),
+                    onPressed: () => print('Agregar Publicación'),
+                    iconSize: 20,
+                    icon: Icon(FontAwesomeIcons.plus),
+                    color: Colors.purple,
+                  ),
                   IconButton(
-                      onPressed: () => print('Ver interacciones'),
-                      iconSize: 20,
-                      icon: Icon(FontAwesomeIcons.heart)),
+                    onPressed: () => print('Ver interacciones'),
+                    iconSize: 20,
+                    icon: Icon(FontAwesomeIcons.heart),
+                    color: Colors.purple,
+                  ),
                   IconButton(
-                      onPressed: () => print('Ver mensajes'),
-                      iconSize: 20,
-                      icon: Icon(FontAwesomeIcons.envelope))
+                    onPressed: () => print('Ver mensajes'),
+                    iconSize: 20,
+                    icon: Icon(FontAwesomeIcons.envelope),
+                    color: Colors.purple,
+                  )
                 ],
               )
             ],
@@ -48,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 100,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: fotos.length,
+              itemCount: posts.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                     margin: EdgeInsets.all(10),
@@ -77,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
           height: MediaQuery.of(context).size.height,
           child: ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: fotos.length,
+              itemCount: posts.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                     margin: EdgeInsets.all(10),
@@ -100,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(fotos[index].toString()),
+                              child: Text(posts[index].titulo.toString()),
                             ),
                           ],
                         ),
@@ -136,6 +190,6 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
         ),
       ],
-    ));
+    );
   }
 }

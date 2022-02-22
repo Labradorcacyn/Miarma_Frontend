@@ -59,14 +59,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                 )),
           ),
           SliverAppBar(
-            backgroundColor: Colors.purple,
+            backgroundColor: Colors.grey[100],
             pinned: true,
             title: Container(
               constraints: BoxConstraints.expand(height: 50),
               child: TabBar(controller: tab, tabs: [
-                Tab(icon: Icon(FontAwesomeIcons.photoVideo)),
-                Tab(icon: Icon(FontAwesomeIcons.video)),
-                Tab(icon: Icon(FontAwesomeIcons.userTag)),
+                Tab(
+                    icon: Icon(FontAwesomeIcons.photoVideo,
+                        color: Colors.purple)),
+                Tab(icon: Icon(FontAwesomeIcons.video, color: Colors.purple)),
+                Tab(icon: Icon(FontAwesomeIcons.userTag, color: Colors.purple)),
               ]),
             ),
           ),
