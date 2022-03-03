@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:miarma_app/screens/follower_screen.dart';
+import 'package:miarma_app/screens/follows_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -33,26 +34,46 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      flex: 3,
-                      child: Text(
-                        "Miarma App",
-                        style: TextStyle(color: Colors.purple),
-                      ),
+                      flex: 2,
+                      child: Image.asset("assets/images/logoColor.png"),
                     ),
                     Expanded(
                         flex: 2,
-                        child: Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Seguidores",
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Row(
+                            children: <Widget>[
+                              Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    child: Text("Followers",
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.purple)),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const FollowerScreen()));
+                                    },
+                                  )),
+                              InkWell(
+                                child: Text(
+                                  "Following",
                                   style: TextStyle(
-                                      fontSize: 10, color: Colors.purple)),
-                            ),
-                            Text("Siguiendo",
-                                style: TextStyle(
-                                    fontSize: 10, color: Colors.purple))
-                          ],
+                                      fontSize: 10, color: Colors.purple),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const FollowsScreen()));
+                                },
+                              )
+                            ],
+                          ),
                         ))
                   ],
                 )),
