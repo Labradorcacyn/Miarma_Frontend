@@ -4,6 +4,8 @@ import 'package:miarma_app/models/auth/login_dto.dart';
 import 'package:miarma_app/models/auth/login_response.dart';
 import 'package:miarma_app/resources/auth_repository.dart';
 
+import '../utils/constant.dart';
+
 class AuthRepositoryImpl extends AuthRepository {
   final Client _client = Client();
 
@@ -16,7 +18,7 @@ class AuthRepositoryImpl extends AuthRepository {
 
     final response =
         await Future.delayed(const Duration(milliseconds: 4000), () {
-      return _client.post(Uri.parse('http://10.0.2.2:8080/auth/login'),
+      return _client.post(Uri.parse('${Constants.apiBaseUrl}/auth/login'),
           headers: headers, body: jsonEncode(loginDto.toJson()));
     });
     if (response.statusCode == 201) {

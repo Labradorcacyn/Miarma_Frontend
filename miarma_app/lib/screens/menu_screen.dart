@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:miarma_app/screens/home_screen.dart';
 import 'package:miarma_app/screens/profile_screen.dart';
 import 'package:miarma_app/screens/search_screen.dart';
+import 'package:miarma_app/utils/constant.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -61,29 +62,28 @@ class _MenuScreenState extends State<MenuScreen> {
               },
             ),
             GestureDetector(
-              onTap: () {
-                setState(() {
-                  _currentIndex = 2;
-                });
-              },
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(
-                        color: _currentIndex == 2
-                            ? Colors.purple
-                            : Colors.transparent,
-                        width: 1)),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: Image.asset(
-                    'assets/images/avatar.jpeg',
-                    height: 30,
-                  ),
-                ),
-              ),
-            )
+                onTap: () {
+                  setState(() {
+                    _currentIndex = 2;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  width: 30.0,
+                  height: 30.0,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: _currentIndex == 2
+                              ? Colors.black
+                              : Colors.transparent,
+                          width: 1),
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(Constants.avatar
+                              .toString()
+                              .replaceFirst('localhost', '10.0.2.2')))),
+                ))
           ],
         ));
   }

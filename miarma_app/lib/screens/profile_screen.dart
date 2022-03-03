@@ -20,9 +20,8 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: CustomScrollView(
+    return SafeArea(
+      child: CustomScrollView(
         shrinkWrap: true,
         slivers: <Widget>[
           SliverAppBar(

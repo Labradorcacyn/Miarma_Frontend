@@ -12,12 +12,12 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepository authRepository;
 
-  LoginBloc(this.authRepository) : super(LoginInitialState()) {
+  LoginBloc(this.authRepository) : super(RegisterInitialState()) {
     on<DoLoginEvent>(_doLoginEvent);
   }
 
   void _doLoginEvent(DoLoginEvent event, Emitter<LoginState> emit) async {
-    emit(LoginLoadingState());
+    emit(RegisterLoadingState());
     try {
       final loginResponse = await authRepository.login(event.loginDto);
 

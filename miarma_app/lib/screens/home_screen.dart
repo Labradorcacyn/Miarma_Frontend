@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:miarma_app/blocs/bloc_posts/post_bloc.dart';
 import 'package:miarma_app/models/post_model.dart';
 import 'package:miarma_app/resources/post_repositoryImpl.dart';
@@ -59,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _createPostView(BuildContext context, List<PostModel> posts) {
-    return Container(
+    return SizedBox(
       height: 800,
       width: MediaQuery.of(context).size.width,
       child: ListView(
