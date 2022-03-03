@@ -1,192 +1,152 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:miarma_app/screens/register_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:miarma_app/blocs/bloc_login/login_bloc.dart';
+import 'package:miarma_app/models/auth/login_dto.dart';
+import 'package:miarma_app/resources/auth_repository.dart';
+import 'package:miarma_app/resources/auth_repository_impl.dart';
+import 'package:miarma_app/screens/menu_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
-  double getSmallDiameter(BuildContext context) =>
-      MediaQuery.of(context).size.width * 2 / 3;
-  double getBiglDiameter(BuildContext context) =>
-      MediaQuery.of(context).size.width * 7 / 8;
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  late AuthRepository authRepository;
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    authRepository = AuthRepositoryImpl();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (context) {
+          return LoginBloc(authRepository);
+        },
+        child: _createBody(context));
+  }
+
+  _createBody(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEEEEEE),
-      body: Stack(
-        children: <Widget>[
-          Positioned(
-            right: -getSmallDiameter(context) / 3,
-            top: -getSmallDiameter(context) / 3,
-            child: Container(
-              width: getSmallDiameter(context),
-              height: getSmallDiameter(context),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                      colors: [Color(0xFFB226B2), Color(0xFFFF6DA7)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter)),
+      body: Center(
+        child: Container(
+            color: const Color(0xff0F7EDD),
+            padding: const EdgeInsets.all(20),
+            child: BlocConsumer<LoginBloc, LoginState>(
+                listenWhen: (context, state) {
+              return state is LoginSuccessState || state is LoginErrorState;
+            }, listener: (context, state) {
+              if (state is LoginSuccessState) {
+                // Shared preferences > guardo el token
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MenuScreen()),
+                );
+              } else if (state is LoginErrorState) {
+                _showSnackbar(context, state.message);
+              }
+            }, buildWhen: (context, state) {
+              return state is LoginInitialState || state is LoginLoadingState;
+            }, builder: (ctx, state) {
+              if (state is LoginInitialState) {
+                return buildForm(ctx);
+              } else if (state is LoginLoadingState) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return buildForm(ctx);
+              }
+            })),
+      ),
+    );
+  }
+
+  void _showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Widget buildForm(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset('assets/images/logo.png'),
+          Container(
+            margin: const EdgeInsets.only(top: 50),
+            child: TextFormField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                  suffixIcon: Icon(Icons.email),
+                  suffixIconColor: Colors.white,
+                  hintText: 'Email',
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white))),
+              onSaved: (String? value) {
+                // This optional block of code can be used to run
+                // code when the user saves the form.
+              },
+              validator: (String? value) {
+                return (value == null || !value.contains('@'))
+                    ? 'Do not use the @ char.'
+                    : null;
+              },
             ),
           ),
-          Positioned(
-            left: -getBiglDiameter(context) / 4,
-            top: -getBiglDiameter(context) / 4,
+          Container(
+            margin: const EdgeInsets.only(top: 20),
+            child: TextFormField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                  suffixIcon: Icon(Icons.vpn_key),
+                  suffixIconColor: Colors.white,
+                  hintText: 'Password',
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white))),
+              onSaved: (String? value) {
+                // This optional block of code can be used to run
+                // code when the user saves the form.
+              },
+              validator: (value) {
+                return (value == null || value.isEmpty)
+                    ? 'Write a password'
+                    : null;
+              },
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              if (_formKey.currentState!.validate()) {
+                final loginDto = LoginDto(
+                    email: emailController.text,
+                    password: passwordController.text);
+                BlocProvider.of<LoginBloc>(context).add(DoLoginEvent(loginDto));
+              }
+            },
             child: Container(
-              child: const Center(
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.only(top: 30, left: 30, right: 30),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(50)),
                 child: Text(
-                  "MiarmaApp",
-                  style: TextStyle(
-                      fontFamily: "Pacifico",
-                      fontSize: 30,
-                      color: Colors.white),
-                ),
-              ),
-              width: getBiglDiameter(context),
-              height: getBiglDiameter(context),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                      colors: [Color(0xFFB226B2), Color(0xFFFF4891)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter)),
-            ),
-          ),
-          Positioned(
-            right: -getBiglDiameter(context) / 2,
-            bottom: -getBiglDiameter(context) / 2,
-            child: Container(
-              width: getBiglDiameter(context),
-              height: getBiglDiameter(context),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: Color(0xFFF3E9EE)),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ListView(
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10)),
-                  margin: const EdgeInsets.fromLTRB(20, 300, 20, 10),
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 25),
-                  child: Column(
-                    children: <Widget>[
-                      TextField(
-                        decoration: InputDecoration(
-                            icon: const Icon(
-                              Icons.email,
-                              color: Color(0xFFFF4891),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade100)),
-                            labelText: "Email",
-                            enabledBorder: InputBorder.none,
-                            labelStyle: const TextStyle(color: Colors.grey)),
-                      ),
-                      TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            icon: const Icon(
-                              Icons.vpn_key,
-                              color: Color(0xFFFF4891),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade100)),
-                            labelText: "Password",
-                            enabledBorder: InputBorder.none,
-                            labelStyle: const TextStyle(color: Colors.grey)),
-                      )
-                    ],
-                  ),
-                ),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                        margin: const EdgeInsets.fromLTRB(0, 0, 20, 10),
-                        child: const Text(
-                          "FORGOT PASSWORD?",
-                          style:
-                              TextStyle(color: Color(0xFFFF4891), fontSize: 11),
-                        ))),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        height: 40,
-                        child: Container(
-                          child: Material(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              splashColor: Colors.amber,
-                              onTap: () {},
-                              child: const Center(
-                                child: Text(
-                                  "SIGN IN",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ),
-                            ),
-                          ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFFB226B2),
-                                    Color(0xFFFF4891)
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter)),
-                        ),
-                      ),
-                      FloatingActionButton(
-                          onPressed: () {},
-                          mini: true,
-                          elevation: 0,
-                          child: Icon(FontAwesomeIcons.facebook)),
-                      FloatingActionButton(
-                          onPressed: () {},
-                          mini: true,
-                          elevation: 0,
-                          child: Icon(FontAwesomeIcons.twitter)),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "DON'T HAVE AN ACCOUNT ? ",
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    InkWell(
-                      child: Text("SIGN UP"),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RegisterScreen()));
-                      },
-                    )
-                  ],
-                )
-              ],
-            ),
+                  'Sign In'.toUpperCase(),
+                  style: const TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                )),
           )
         ],
       ),

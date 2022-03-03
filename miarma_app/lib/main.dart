@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:miarma_app/screens/home_screen.dart';
 import 'package:miarma_app/screens/login_screen.dart';
-import 'package:miarma_app/screens/menu_screen.dart';
+import 'package:miarma_app/utils/preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //PreferenceUtils.init();
+    PreferenceUtils.init();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(),
       initialRoute: '/',
       routes: {
-        '/': (context) => MenuScreen(),
+        '/': (context) => const LoginScreen(),
       },
     );
   }

@@ -16,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //List fotos = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   late RepositoryPost postRepository;
 
   @override
@@ -34,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        return PostBloc(postRepository)..add(FetchPostsPublicEvent());
+        return PostBloc(postRepository)..add(const FetchPostsPublicEvent());
       },
       child: Scaffold(body: _listPosts(context)),
     );
@@ -50,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return ErrorPage(
           message: state.message,
           retry: () {
-            context.watch<PostBloc>().add(FetchPostsPublicEvent());
+            context.watch<PostBloc>().add(const FetchPostsPublicEvent());
           },
         );
       } else {
@@ -60,136 +59,140 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _createPostView(BuildContext context, List<PostModel> posts) {
-    return ListView(
-      physics: AlwaysScrollableScrollPhysics(),
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "MiarmaApp",
-                style: TextStyle(fontSize: 30, color: Colors.purple),
-              ),
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () => print('Agregar Publicación'),
-                    iconSize: 20,
-                    icon: Icon(FontAwesomeIcons.plus),
-                    color: Colors.purple,
-                  ),
-                  IconButton(
-                    onPressed: () => print('Ver interacciones'),
-                    iconSize: 20,
-                    icon: Icon(FontAwesomeIcons.heart),
-                    color: Colors.purple,
-                  ),
-                  IconButton(
-                    onPressed: () => print('Ver mensajes'),
-                    iconSize: 20,
-                    icon: Icon(FontAwesomeIcons.envelope),
-                    color: Colors.purple,
-                  )
-                ],
-              )
-            ],
+    return Container(
+      height: 800,
+      width: MediaQuery.of(context).size.width,
+      child: ListView(
+        physics: AlwaysScrollableScrollPhysics(),
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "MiarmaApp",
+                  style: TextStyle(fontSize: 30, color: Colors.purple),
+                ),
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () => print('Agregar Publicación'),
+                      iconSize: 20,
+                      icon: Icon(FontAwesomeIcons.plus),
+                      color: Colors.purple,
+                    ),
+                    IconButton(
+                      onPressed: () => print('Ver interacciones'),
+                      iconSize: 20,
+                      icon: Icon(FontAwesomeIcons.heart),
+                      color: Colors.purple,
+                    ),
+                    IconButton(
+                      onPressed: () => print('Ver mensajes'),
+                      iconSize: 20,
+                      icon: Icon(FontAwesomeIcons.envelope),
+                      color: Colors.purple,
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
-        ),
-        Container(
-          width: double.infinity,
-          height: 100,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: posts.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                    margin: EdgeInsets.all(10),
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black45,
-                              offset: Offset(0, 2),
-                              blurRadius: 6.0)
-                        ]),
-                    child: CircleAvatar(
-                        child: ClipOval(
-                            child: Image(
-                                height: 60,
-                                width: 60,
-                                image: NetworkImage(
-                                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoHYtXTchhspak0O8PNPKAPD9Cf08U6284ng&usqp=CAU'),
-                                fit: BoxFit.cover))));
-              }),
-        ),
-        Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height,
-          child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: posts.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                    margin: EdgeInsets.all(10),
-                    width: double.infinity,
-                    height: 610,
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CircleAvatar(
-                                  child: ClipOval(
-                                      child: Image(
-                                          height: 60,
-                                          width: 60,
-                                          image: NetworkImage(
-                                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoHYtXTchhspak0O8PNPKAPD9Cf08U6284ng&usqp=CAU'),
-                                          fit: BoxFit.cover))),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(posts[index].titulo.toString()),
-                            ),
-                          ],
-                        ),
-                        Image(
-                            height: 500,
-                            width: double.infinity,
-                            image: NetworkImage(
-                                'https://static.eldiario.es/clip/71d118ff-5ef2-449c-be8a-6c321304fa70_16-9-aspect-ratio_default_0.jpg'),
-                            fit: BoxFit.cover),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                IconButton(
-                                    onPressed: () => print("Like post"),
-                                    icon: Icon(FontAwesomeIcons.solidHeart)),
-                                Text("450")
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                IconButton(
-                                    onPressed: () => print("Comments"),
-                                    icon: Icon(FontAwesomeIcons.envelope)),
-                                Text("45")
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ));
-              }),
-        ),
-      ],
+          Container(
+            width: double.infinity,
+            height: 100,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: posts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                      margin: EdgeInsets.all(10),
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black45,
+                                offset: Offset(0, 2),
+                                blurRadius: 6.0)
+                          ]),
+                      child: CircleAvatar(
+                          child: ClipOval(
+                              child: Image(
+                                  height: 60,
+                                  width: 60,
+                                  image: NetworkImage(
+                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoHYtXTchhspak0O8PNPKAPD9Cf08U6284ng&usqp=CAU'),
+                                  fit: BoxFit.cover))));
+                }),
+          ),
+          Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height,
+            child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: posts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                      margin: EdgeInsets.all(10),
+                      width: double.infinity,
+                      height: 610,
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircleAvatar(
+                                    child: ClipOval(
+                                        child: Image(
+                                            height: 60,
+                                            width: 60,
+                                            image: NetworkImage(
+                                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoHYtXTchhspak0O8PNPKAPD9Cf08U6284ng&usqp=CAU'),
+                                            fit: BoxFit.cover))),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(posts[index].title.toString()),
+                              ),
+                            ],
+                          ),
+                          Image(
+                              height: 500,
+                              width: double.infinity,
+                              image: NetworkImage(
+                                  'https://static.eldiario.es/clip/71d118ff-5ef2-449c-be8a-6c321304fa70_16-9-aspect-ratio_default_0.jpg'),
+                              fit: BoxFit.cover),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  IconButton(
+                                      onPressed: () => print("Like post"),
+                                      icon: Icon(FontAwesomeIcons.solidHeart)),
+                                  Text("450")
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  IconButton(
+                                      onPressed: () => print("Comments"),
+                                      icon: Icon(FontAwesomeIcons.envelope)),
+                                  Text("45")
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ));
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

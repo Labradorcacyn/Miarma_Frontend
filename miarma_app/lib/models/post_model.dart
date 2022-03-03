@@ -1,40 +1,40 @@
 class PostModel {
-  String? id;
-  String? titulo;
-  String? contenido;
-  String? media;
-  String? nickUsuario;
-  String? fechaPublicacion;
-  bool? public;
+  int? id;
+  String? title;
+  String? text;
+  String? document;
+  String? documentResized;
+  String? user;
+  bool? privacy;
 
   PostModel(
       {this.id,
-      this.titulo,
-      this.contenido,
-      this.media,
-      this.nickUsuario,
-      this.fechaPublicacion,
-      this.public});
+      this.title,
+      this.text,
+      this.document,
+      this.documentResized,
+      this.user,
+      this.privacy});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    titulo = json['titulo'];
-    contenido = json['contenido'];
-    media = json['media'];
-    nickUsuario = json['nickUsuario'];
-    fechaPublicacion = json['fechaPublicacion'];
-    public = json['public'];
+    title = json['title'];
+    text = json['text'];
+    document = json['document'];
+    documentResized = json['documentResized'];
+    user = json['user'];
+    privacy = json['privacy'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['titulo'] = this.titulo;
-    data['contenido'] = this.contenido;
-    data['media'] = this.media;
-    data['nickUsuario'] = this.nickUsuario;
-    data['fechaPublicacion'] = this.fechaPublicacion;
-    data['public'] = this.public;
+    data['id'] = id;
+    data['title'] = title;
+    data['text'] = text;
+    data['document'] = document;
+    data['documentResized'] = documentResized;
+    data['user'] = user;
+    data['privacy'] = privacy;
     return data;
   }
 }
