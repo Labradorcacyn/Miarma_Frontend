@@ -69,10 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
-                  "MiarmaApp",
-                  style: TextStyle(fontSize: 30, color: Colors.purple),
-                ),
+                Image.asset("assets/images/logoColor.png", width: 200),
                 Row(
                   children: <Widget>[
                     IconButton(
@@ -122,8 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Image(
                                   height: 60,
                                   width: 60,
-                                  image: NetworkImage(
-                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoHYtXTchhspak0O8PNPKAPD9Cf08U6284ng&usqp=CAU'),
+                                  image: NetworkImage(posts[index]
+                                      .documentResized!
+                                      .replaceAll('localhost', '10.0.2.2')),
                                   fit: BoxFit.cover))));
                 }),
           ),
@@ -149,8 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Image(
                                             height: 60,
                                             width: 60,
-                                            image: NetworkImage(
-                                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoHYtXTchhspak0O8PNPKAPD9Cf08U6284ng&usqp=CAU'),
+                                            image: NetworkImage(posts[index]
+                                                .documentResized!
+                                                .replaceAll(
+                                                    'localhost', '10.0.2.2')),
                                             fit: BoxFit.cover))),
                               ),
                               Padding(
@@ -162,8 +162,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           Image(
                               height: 500,
                               width: double.infinity,
-                              image: NetworkImage(
-                                  'https://static.eldiario.es/clip/71d118ff-5ef2-449c-be8a-6c321304fa70_16-9-aspect-ratio_default_0.jpg'),
+                              image: NetworkImage(posts[index]
+                                  .documentResized!
+                                  .replaceAll('localhost', '10.0.2.2')),
                               fit: BoxFit.cover),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,

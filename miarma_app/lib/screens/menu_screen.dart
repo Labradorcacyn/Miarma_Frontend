@@ -18,7 +18,7 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = [
+  final List<Widget> _widgetOptions = [
     HomeScreen(),
     SearchScreen(),
     ProfileScreen()

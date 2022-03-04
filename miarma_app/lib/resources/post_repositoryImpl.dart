@@ -20,7 +20,7 @@ class PostRepositoryImpl extends RepositoryPost {
       headers: headers,
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       return List.from(json
           .decode(response.body)
           .map((e) => PostModel.fromJson(e))
