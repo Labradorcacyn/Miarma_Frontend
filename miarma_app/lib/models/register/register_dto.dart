@@ -14,7 +14,7 @@ class RegisterDTO {
   late final String email;
   late final String password;
   late final String password2;
-  late final String privacy;
+  late final bool privacy;
 
   RegisterDTO.fromJson(Map<String, dynamic> json) {
     avatar = json['avatar'];

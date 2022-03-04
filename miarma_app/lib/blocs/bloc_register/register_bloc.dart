@@ -18,7 +18,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       DoRegisterEvent event, Emitter<RegisterState> emit) async {
     try {
       final registerResponse =
-          await registerRepository.register(event.registerDTO, event.path);
+          await registerRepository.register(event.registerDTO);
       emit(RegisterSuccessState(registerResponse));
       return;
     } on Exception catch (e) {

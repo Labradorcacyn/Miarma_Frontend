@@ -44,15 +44,10 @@ class _MenuScreenState extends State<MenuScreen> {
           ),
           BottomNavigationBarItem(
             icon: ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Image.file(
-                File(PreferenceUtils.getString(Constants.avatar)!
-                    .replaceAll('localhost', '10.0.2.2')),
-                width: 30,
-                height: 30,
-                fit: BoxFit.fill,
-              ),
-            ),
+                borderRadius: BorderRadius.circular(100),
+                child: Image.network(
+                    PreferenceUtils.getString(Constants.avatar)!
+                        .replaceAll('localhost', '10.0.2.2'))),
           ),
         ],
         currentIndex: _selectedIndex,

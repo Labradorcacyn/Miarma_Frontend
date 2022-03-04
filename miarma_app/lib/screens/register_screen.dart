@@ -144,25 +144,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                     builder: (context, state) {
                       if (state is ImageSelectedSuccessState) {
-                        return Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Image.file(
-                                File(state.pickedFile.path),
-                                width: 150,
-                                height: 150,
-                                fit: BoxFit.fill,
-                              ),
+                        filePath = state.pickedFile.path;
+                        return InkWell(
+                          onTap: () {
+                            BlocProvider.of<ImagePickBlocBloc>(context).add(
+                                const SelectImageEvent(ImageSource.gallery));
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.file(
+                              File(state.pickedFile.path),
+                              width: 150,
+                              height: 150,
+                              fit: BoxFit.fill,
                             ),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  prefs.setString('file', filePath);
-                                },
-                                child: const Text('Pick Photo'))
-                          ],
+                          ),
                         );
                       }
                       return Center(
@@ -306,15 +302,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
                               final registerDTO = RegisterDTO(
-                                  fullname: nameController.text,
                                   avatar: filePath,
+                                  fullname: nameController.text,
                                   email: emailController.text,
-                                  privacy: isPublic.toString(),
+                                  privacy: isPublic,
                                   birthday: birthDate,
                                   password: passwordController.text,
                                   password2: password2Controller.text);
                               BlocProvider.of<RegisterBloc>(context)
-                                  .add(DoRegisterEvent(registerDTO, filePath));
+                                  .add(DoRegisterEvent(registerDTO));
                             }
                           },
                           child: const Center(

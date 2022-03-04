@@ -9,31 +9,27 @@ import '../utils/constant.dart';
 
 class RegisterRepositoryImpl extends RegisterRepository {
   @override
-  Future<RegisterResponse> register(
-      RegisterDTO registerDTO, String path) async {
+  Future<RegisterResponse> register(RegisterDTO registerDTO) async {
     Map<String, String> headers = {
       'Content-Type': 'multipart/form-data',
     };
 
     final uri = Uri.parse('${Constants.apiBaseUrl}/auth/register');
 
-    final body = jsonEncode({
-      'avatar': "",
-      'fullname': registerDTO.fullname,
+    final body = json.encode({
+      'fullName': registerDTO.fullname,
       'email': registerDTO.email,
       'password': registerDTO.password,
+      'file': "",
       'password2': registerDTO.password2,
-      'visibilidad': registerDTO.privacy,
-      'fechaNacimiento': registerDTO.birthday.toString().split(' ')[0]
+      'privacy': registerDTO.privacy,
+      'birthday': registerDTO.birthday.toString().split(' ')[0]
     });
 
-    PreferenceUtils.setString('avatar', path);
-
     final request = http.MultipartRequest('POST', uri)
-      ..files.add(http.MultipartFile.fromString('nuevoUsuario', body,
+      ..files.add(http.MultipartFile.fromString('body', body,
           contentType: MediaType('application', 'json')))
-      ..files.add(await http.MultipartFile.fromPath('file', path,
-          contentType: MediaType('image', 'jpg')))
+      ..files.add(await http.MultipartFile.fromPath('file', registerDTO.avatar))
       ..headers.addAll(headers);
 
     final res = await request.send();
