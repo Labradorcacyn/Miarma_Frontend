@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:miarma_app/screens/follower_screen.dart';
+import 'package:miarma_app/blocs/bloc_posts/post_bloc.dart';
+import 'package:miarma_app/models/post_model.dart';
+import 'package:miarma_app/resources/post_repositoryImpl.dart';
+import 'package:miarma_app/resources/repository_post.dart';
+import 'package:miarma_app/ui/widgets/error_page.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -9,20 +14,54 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen>
     with TickerProviderStateMixin {
+  late RepositoryPost postRepository;
   late TabController tab;
-  List fotos = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
   @override
   void initState() {
     super.initState();
+    postRepository = PostRepositoryImpl();
     tab = TabController(length: 1, vsync: this);
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: CustomScrollView(
+    return BlocProvider(
+      create: (context) {
+        return PostBloc(postRepository)..add(const FetchPostsPublicEvent());
+      },
+      child: Scaffold(body: _listPosts(context)),
+    );
+  }
+
+  _listPosts(BuildContext context) {
+    return BlocBuilder<PostBloc, PostState>(builder: (context, state) {
+      if (state is PostInitial) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (state is PostFetched) {
+        return _createPostView(context, state.posts);
+      } else if (state is PostFetchError) {
+        return ErrorPage(
+          message: state.message,
+          retry: () {
+            context.watch<PostBloc>().add(const FetchPostsPublicEvent());
+          },
+        );
+      } else {
+        return const Text('Not support');
+      }
+    });
+  }
+
+  @override
+  Widget _createPostView(BuildContext context, List<PostModel> posts) {
+    return Container(
+      child: CustomScrollView(
         shrinkWrap: true,
         slivers: <Widget>[
           SliverPadding(
@@ -55,23 +94,31 @@ class _SearchScreenState extends State<SearchScreen>
                         children: [
                           Container(
                               child: GridView.builder(
-                            itemCount: fotos.length,
+                            itemCount: posts.length,
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3),
                             itemBuilder: (context, index) {
-                              return Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: Container(
-                                      width: 120,
-                                      height: 120,
-                                      color: Colors.grey,
-                                      child: Text('$index'),
+                              return Container(
+                                child: Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Container(
+                                          width: 120,
+                                          height: 120,
+                                          color: Colors.grey,
+                                          child: Container(
+                                            child: Image(
+                                                image: NetworkImage(posts[index]
+                                                    .documentResized!
+                                                    .replaceAll('localhost',
+                                                        '10.0.2.2')),
+                                                fit: BoxFit.cover),
+                                          )),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               );
                             },
                           )),
